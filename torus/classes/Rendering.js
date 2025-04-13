@@ -1,4 +1,3 @@
-// Rendering.js
 import * as THREE from 'three';
 import size from '../Utils/sizes.js';
 
