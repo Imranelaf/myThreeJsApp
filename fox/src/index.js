@@ -6,45 +6,37 @@ import Light from '../classes/Light.js';
 import Object from '../classes/Object.js';
 import Model from '../classes/LoadModel.js';
 
+//Scence setup
+const canvas = document.querySelector('canvas');
 const scene = new THREE.Scene();
-const camera = new Camera();
+
+//Initiliaze classes
 const light = new Light();
+const camera = new Camera(canvas);
 const object = new Object();
 const model = new Model(scene);
+const rendering = new Rendering()
+const render = rendering.display(canvas);
 
-
-const canvas = document.querySelector('canvas'); 
-const rendering = new Rendering();
-let renderer = rendering.display(canvas);
-
-
-const directionalLight = light.DirectionalLight();
-const ambientLight = light.AmbientLight();
-const circle = object.shape();
-scene.add(circle)
-const cameraInstance = new Camera(canvas);
-let perspectiveCamera = cameraInstance.getCamera();
+//load the fox model
 model.loadModel();
-  
-//resizing
+ 
+//preparing the scene
+scene.add(light.DirectionalLight(), light.AmbientLight(), object.shape());
 
-window.addEventListener('resize', ()=>{
-    perspectiveCamera = camera.getCamera();
-    renderer = rendering.display(canvas);
-    animate()
-    
-})
-
-
-scene.add(directionalLight, ambientLight)
-
-
-
-// in your animation loop
+//animation loop
 function animate() {
     requestAnimationFrame(animate);
-    cameraInstance.updateControls(); // update orbit
-    renderer.render(scene, perspectiveCamera);
+    camera.updateControls();
+    render.render(scene, camera.getCamera());
 }
 
 animate()
+
+//resizing
+
+window.addEventListener('resize', ()=>{
+    
+     camera.updateCamera();
+     rendering.update();
+})

@@ -16,12 +16,11 @@ export default class Model {
           fox.scale.set(0.02, 0.02, 0.02);
           fox.rotation.y = .5
           this.scene.add(fox);
-      
-          console.log('✅ success', fox);
         },
         undefined, // progress
         (error) => {
-          console.log('❌ error', error);
+          console.log(" error', error");
+          alert('the loading processes of the model has been failed, Please try again later')
         }
       );
         return model;
