@@ -13,7 +13,6 @@ export default class Rendering {
         this.renderer.setClearColor(0x808080);
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        
         return this.renderer;
     }
     update(){

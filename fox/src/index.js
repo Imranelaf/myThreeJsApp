@@ -30,6 +30,7 @@ scene.add(light.DirectionalLight(), light.AmbientLight(), object.shape());
 function animate() {
     requestAnimationFrame(animate);
     camera.updateControls();
+    model.update();
     render.render(scene, camera.getCamera());
 }
 
