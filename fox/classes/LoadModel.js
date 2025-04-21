@@ -10,6 +10,8 @@ export default class Model {
         this.mixer = null;
         this.model = null;
         this.clock = new THREE.Clock();
+        this.state = 0;
+        this.movement = null;
     }
 
     loadModel() {
@@ -35,9 +37,13 @@ export default class Model {
                     this.model = fox;
                     
                     // Set up animation
+                    
                     if (gltf.animations && gltf.animations.length > 0) {
+                        this.movement = gltf.animations;
+                        console.log(this.movement);
+                        
                         this.mixer = new THREE.AnimationMixer(fox);
-                        this.action = this.mixer.clipAction(gltf.animations[0]);
+                        this.action = this.mixer.clipAction(this.movement[this.state]);
                         this.action.play();
                     }
                     
@@ -52,9 +58,20 @@ export default class Model {
         });
     }
 
-    update() {
+    animation(state){
+      if(state === this.state) return;
+
+     
+      this.action.stop();
+      this.state = state;
+      this.action = this.mixer.clipAction(this.movement[this.state]);
+      this.action.play(); 
+    }
+
+    animationUpdate() {
         if (this.mixer) {
             // Get the time delta since the last frame
+            
             const delta = this.clock.getDelta();
             this.mixer.update(delta);
         }

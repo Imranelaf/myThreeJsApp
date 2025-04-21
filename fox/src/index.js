@@ -5,6 +5,9 @@ import Rendering from '../classes/Rendering.js';
 import Light from '../classes/Light.js';
 import Object from '../classes/Object.js';
 import Model from '../classes/LoadModel.js';
+import { GUI } from 'dat.gui';
+import { color } from 'three/tsl';
+
 
 //Scence setup
 const canvas = document.querySelector('canvas');
@@ -26,11 +29,31 @@ scene.add(light.DirectionalLight(), light.AmbientLight(), object.shape());
 
 
 
+//GUI CONTROLES
+
+const gui = new GUI();
+
+const foxAnimationFolder = gui.addFolder('Change Animation');
+
+const control = {
+    buttonFunction : ()=>{model.animation(0)},
+    buttonFunction1 : ()=>{model.animation(1)},
+    buttonFunction2 : ()=>{model.animation(2)}
+
+}
+foxAnimationFolder.add(control, 'buttonFunction').name('Survey')
+foxAnimationFolder.add(control, 'buttonFunction1').name('Walk')
+foxAnimationFolder.add(control, 'buttonFunction2').name('Run')
+
+
+
+
+
 //animation loop
 function animate() {
     requestAnimationFrame(animate);
     camera.updateControls();
-    model.update();
+    model.animationUpdate();
     render.render(scene, camera.getCamera());
 }
 
