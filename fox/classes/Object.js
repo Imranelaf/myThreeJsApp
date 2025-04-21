@@ -12,6 +12,7 @@ export default class Object {
         const material = new THREE.MeshStandardMaterial({map: this.image})
         const mesh = new THREE.Mesh(geometry, material);
         mesh.rotation.x = -1.5;
+        mesh.receiveShadow = true;
 
         return mesh;
     }

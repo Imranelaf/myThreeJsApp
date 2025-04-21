@@ -3,12 +3,15 @@ import * as THREE from 'three'
 export default class Light{
 
     DirectionalLight(){
-        const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.8 );
+        const directionalLight = new THREE.DirectionalLight( 0xffffff, 2.5 );
+        directionalLight.position.set(3, 3);
+        directionalLight.target.position.x =-1.5;
+        directionalLight.castShadow = true;
         return directionalLight;
     }
 
     AmbientLight(){
-        const ambientLight = new THREE.AmbientLight( 0xffffff, 2 );
+        const ambientLight = new THREE.AmbientLight( 0xffffff, .8 );
         return ambientLight;
     }
 }

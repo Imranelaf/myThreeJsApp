@@ -20,9 +20,11 @@ const render = rendering.display(canvas);
 
 //load the fox model
 model.loadModel();
- 
+
 //preparing the scene
 scene.add(light.DirectionalLight(), light.AmbientLight(), object.shape());
+
+
 
 //animation loop
 function animate() {

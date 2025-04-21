@@ -10,7 +10,9 @@ export default class Rendering {
         
         this.renderer = new THREE.WebGLRenderer({ canvas });
         this.renderer.setSize(this.sizes.width, this.sizes.height);
-        this.renderer.setClearColor(0x808080)
+        this.renderer.setClearColor(0x808080);
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         
         return this.renderer;
     }
