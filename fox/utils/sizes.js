@@ -1,6 +1,3 @@
-export default function size(){
-    const height = window.innerHeight;
-    const width = window.innerWidth;
-    
-    return({'height': height, 'width': width})
+export default function size(){   
+    return({'height': window.innerHeight, 'width': window.innerWidth})
 }

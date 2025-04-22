@@ -1,4 +1,5 @@
-import * as THREE from 'three';
+
+import { CircleGeometry, Mesh, MeshStandardMaterial } from 'three';
 import LoadTexture from '../utils/loadTexture.js';
 
 export default class Object {
@@ -8,9 +9,9 @@ export default class Object {
     }
 
     shape(){
-        const geometry = new THREE.CircleGeometry(5, 32);
-        const material = new THREE.MeshStandardMaterial({map: this.image})
-        const mesh = new THREE.Mesh(geometry, material);
+        const geometry = new CircleGeometry(5, 32);
+        const material = new MeshStandardMaterial({map: this.image})
+        const mesh = new Mesh(geometry, material);
         mesh.rotation.x = -1.5;
         mesh.receiveShadow = true;
 

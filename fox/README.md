@@ -1,32 +1,44 @@
-# 🎯 Simple Torus Rotation (Three.js)
+# Fox Animation Playground
 
-A minimal Three.js project that displays a rotating torus — perfect for learning and experimenting the basics of 3D objects
+Interactive 3D fox with animation controls. Just clone and npm start.
 
----
-
-## 🚀 How to Use It?
-
-### Step 1: Clone the repository
+## 🚀 Quick Start
 ```bash
 git clone https://github.com/Imranelaf/myThreeJsApp.git
-cd myThreeJsApp
-```
-
-### Step 2: Install the dependencies
-```bash
+cd fox
 npm install
-```
-
-### Step 3: Start the development server
-```bash
 npm start
-```
 
-Open your browser and go to: [http://localhost:8080](http://localhost:8080)
 
----
+Then open http://localhost:8080
 
-## 💡 Notes
+✨ Features
+	🎮 Control fox animations (Survey/Walk/Run)
 
-- The torus rotates infinitely.
-- This project is a starting point — feel free to improve or expand it as needed.
+	🖱️ Orbit camera controls
+
+	🌓 Realistic shadows
+
+	📱 Responsive design
+
+	⚡ Smooth animation transitions
+	
+🏗️ Project Structure
+	📦 root
+	├── 📂 classes       # Three.js components
+	│   ├── Camera.js    # Camera setup
+	│   ├── Light.js     # Lighting
+	│   ├── LoadModel.js # Fox model handler
+	│   ├── Object.js    # Ground plane
+	│   └── Rendering.js # Renderer config
+	├── 📂 public        # Static assets
+	│   ├── textures     # Texture files
+	│   └── model/Fox    # 3D model files
+	├── 📂 src           # Main app
+	│   └── index.js     # Scene setup
+	└── webpack.config.js
+	
+📝 Attribution
+Fox model created by KhronosGroup (CC-BY 4.0)
+
+Made with ☕ by Imrane ALI LAFKIH

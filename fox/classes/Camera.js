@@ -1,4 +1,5 @@
-import * as THREE from 'three';
+
+import { PerspectiveCamera } from 'three';
 import size from '../utils/sizes.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
@@ -8,7 +9,7 @@ export default class Camera {
         this.canvas = canvas;
 
         //setting the camera
-        this.camera = new THREE.PerspectiveCamera(45, this.sizes.width / this.sizes.height, 1, 100 );
+        this.camera = new PerspectiveCamera(45, this.sizes.width / this.sizes.height, 1, 100 );
         this.camera.position.z = 10;
         this.camera.position.y = 2.5;
 

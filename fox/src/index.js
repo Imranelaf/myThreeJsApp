@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import { Scene } from 'three';
 import './style.css'
 import Camera from '../classes/Camera.js';
 import Rendering from '../classes/Rendering.js';
@@ -6,12 +6,11 @@ import Light from '../classes/Light.js';
 import Object from '../classes/Object.js';
 import Model from '../classes/LoadModel.js';
 import { GUI } from 'dat.gui';
-import { color } from 'three/tsl';
 
 
-//Scence setup
+//Scene setup
 const canvas = document.querySelector('canvas');
-const scene = new THREE.Scene();
+const scene = new Scene();
 
 //Initiliaze classes
 const light = new Light();
@@ -27,27 +26,17 @@ model.loadModel();
 //preparing the scene
 scene.add(light.DirectionalLight(), light.AmbientLight(), object.shape());
 
-
-
 //GUI CONTROLES
-
 const gui = new GUI();
-
 const foxAnimationFolder = gui.addFolder('Change Animation');
-
 const control = {
-    buttonFunction : ()=>{model.animation(0)},
-    buttonFunction1 : ()=>{model.animation(1)},
-    buttonFunction2 : ()=>{model.animation(2)}
-
-}
-foxAnimationFolder.add(control, 'buttonFunction').name('Survey')
-foxAnimationFolder.add(control, 'buttonFunction1').name('Walk')
-foxAnimationFolder.add(control, 'buttonFunction2').name('Run')
-
-
-
-
+    Survey : ()=>{model.animation(0)},
+    Walk : ()=>{model.animation(1)},
+    Run : ()=>{model.animation(2)}
+};
+foxAnimationFolder.add(control, 'Survey').name('Survey');
+foxAnimationFolder.add(control, 'Walk').name('Walk');
+foxAnimationFolder.add(control, 'Run').name('Run');
 
 //animation loop
 function animate() {
@@ -56,13 +45,11 @@ function animate() {
     model.animationUpdate();
     render.render(scene, camera.getCamera());
 }
-
 animate()
 
 //resizing
-
 window.addEventListener('resize', ()=>{
     
      camera.updateCamera();
      rendering.update();
-})
+});

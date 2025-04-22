@@ -1,5 +1,5 @@
+import { AnimationMixer, Clock, Mesh } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import * as THREE from 'three';
 
 export default class Model {
     constructor(scene) {
@@ -9,7 +9,7 @@ export default class Model {
         this.action = null;
         this.mixer = null;
         this.model = null;
-        this.clock = new THREE.Clock();
+        this.clock = new Clock();
         this.state = 0;
         this.movement = null;
     }
@@ -27,7 +27,7 @@ export default class Model {
                     
                     // Casting the shadow from the fox
                     fox.traverse((element) => {
-                        if (element instanceof THREE.Mesh) {
+                        if (element instanceof Mesh) {
                             element.castShadow = true;
                             element.receiveShadow = false;
                         }
@@ -37,12 +37,9 @@ export default class Model {
                     this.model = fox;
                     
                     // Set up animation
-                    
                     if (gltf.animations && gltf.animations.length > 0) {
                         this.movement = gltf.animations;
-                        console.log(this.movement);
-                        
-                        this.mixer = new THREE.AnimationMixer(fox);
+                        this.mixer = new AnimationMixer(fox);
                         this.action = this.mixer.clipAction(this.movement[this.state]);
                         this.action.play();
                     }
@@ -60,18 +57,20 @@ export default class Model {
 
     animation(state){
       if(state === this.state) return;
-
-     
-      this.action.stop();
+      
+      //change animation "newAction, oldAction and crossFadeFrom is for smoothly changing between animations"
+      const oldAction = this.action; 
       this.state = state;
       this.action = this.mixer.clipAction(this.movement[this.state]);
-      this.action.play(); 
+      const newAction = this.action;
+      newAction.reset();
+      newAction.play();
+      newAction.crossFadeFrom(oldAction, 3); 
     }
 
     animationUpdate() {
         if (this.mixer) {
             // Get the time delta since the last frame
-            
             const delta = this.clock.getDelta();
             this.mixer.update(delta);
         }
