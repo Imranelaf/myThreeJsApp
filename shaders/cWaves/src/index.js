@@ -21,7 +21,6 @@ renderer.setSize(size.width, size.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 const clock = new THREE.Clock();
-let elapseTime = clock.getElapsedTime();
 
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
@@ -34,26 +33,43 @@ const vertex = `
     uniform float Time;
     uniform float waveFrequancy;
     uniform vec2 wavesFrequancy;
+    uniform float waveSpeed;
+
+    varying float vEleve;
     
     void main() {
         vec3 modifiedPosition = position;
         
-        float elevation = sin(modifiedPosition.x * wavesFrequancy.x) * 
-                          sin(modifiedPosition.y * wavesFrequancy.y) * 
+        float elevation = sin(modifiedPosition.x * wavesFrequancy.x + Time * waveSpeed) * 
+                          sin(modifiedPosition.y * wavesFrequancy.y + Time * waveSpeed) * 
                           waveFrequancy;
         
-        // Apply elevation to the Z coordinate to create up/down movement
+        
         modifiedPosition.z = elevation;
+        vEleve = elevation;
         
         gl_Position = projectionMatrix * modelViewMatrix * vec4(modifiedPosition, 1.0);
     }
 `;
 
 const fragment = `
+uniform vec3 depthColor;
+uniform vec3 faceColor;
+
+varying float vEleve;
+
     void main(){ 
-        gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+        vec3 color = mix(depthColor, faceColor, vEleve *5.0 + 1.0);
+
+        gl_FragColor = vec4(color, 1.0);
     }
 `;
+
+
+const colors = {
+    depthcolor: '#186691',
+    facecolor: '#9bd8ff'
+}
 
 const shader = new THREE.ShaderMaterial({
     vertexShader: vertex,
@@ -61,7 +77,10 @@ const shader = new THREE.ShaderMaterial({
     uniforms: {
         Time: { value: 0.0 },
         waveFrequancy: { value: 0.2 },
-        wavesFrequancy: { value: new THREE.Vector2(4.0, 1.5) }
+        wavesFrequancy: { value: new THREE.Vector2(4.0, 1.5) },
+        waveSpeed : {value: 1.0},
+        depthColor: {value: new THREE.Color(colors.depthcolor)},
+        faceColor : {value: new THREE.Color(colors.facecolor)}
     }
 });
 
@@ -75,6 +94,15 @@ const gui = new GUI();
 gui.add(shader.uniforms.waveFrequancy, 'value').min(0.0).max(2.0).step(0.001).name('waveFrequancy');
 gui.add(shader.uniforms.wavesFrequancy.value, 'x').min(0.0).max(10.0).step(0.1).name('wavesFrequancyX');
 gui.add(shader.uniforms.wavesFrequancy.value, 'y').min(0.0).max(10.0).step(0.1).name('wavesFrequancyY');
+gui.add(shader.uniforms.waveSpeed, 'value').min(1.0).max(5.0).step(0.1).name('WavesSpeed')
+gui.addColor(colors, 'depthcolor').name('depthColor').onChange((value)=>{
+    shader.uniforms.depthColor.value.set(value);    
+})
+
+gui.addColor(colors, 'facecolor').name('surfaceColor').onChange((value)=>{
+    shader.uniforms.faceColor.value.set(value);    
+})
+
 
 function animate() {
     requestAnimationFrame(animate);
