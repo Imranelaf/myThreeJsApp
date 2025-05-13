@@ -27,9 +27,11 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 // Galaxy parameters
 let stars = {
-    number: 100,
-    radius: 5,
-    branches: 3
+    number: 200,
+    radius: 2,
+    branches: 4,
+    spin: 3,
+    randomness: 0.2
 };
 
 // Creating the material for the points (stars)
@@ -45,17 +47,26 @@ const geometry = new THREE.BufferGeometry();
 
 // Points (star system) object
 let point = null;
-let radius = 0;
+let radius =  0;
 
 function generate() {
     let positions = new Float32Array(stars.number * 3);
     
+    let branchesAngle = 0;
+
     // Inserting the x, y, z values for each star
-    for (let i = 0; i <= positions.length; i += 3) {
-        radius = Math.random();
-        positions[i] = radius * stars.radius;
-        positions[i + 1] = 0;
-        positions[i + 2] = 0;
+    for (let i = 0; i <= positions.length; i++) {
+        radius =  Math.random() * stars.radius * stars.spin;
+        const i3 = i *3;
+        branchesAngle = (i % stars.branches) / stars.branches * Math.PI * 2;
+        if(i<20){
+            console.log(i, branchesAngle);
+            
+        }
+       
+        positions[i3] = Math.cos(branchesAngle + radius) * radius + (Math.random() * stars.randomness);
+        positions[i3 + 1] = Math.random() * stars.randomness;
+        positions[i3 + 2] =Math.sin(branchesAngle + radius) * radius + (Math.random() * stars.randomness);
     }
 
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -64,8 +75,8 @@ function generate() {
 }
 
 // Adding axis helper
-const axes = new THREE.AxesHelper();
-scene.add(axes);
+/* const axes = new THREE.AxesHelper();
+scene.add(axes); */
 
 // Orbit controls
 const controls = new OrbitControls(camera, canvas);
@@ -96,7 +107,11 @@ galaxy();
 
 // GUI controls
 gui.add(stars, 'number').min(100).max(1000).step(100).onFinishChange(regenerate);
-gui.add(stars, 'radius').min(5).max(20).step(1).name('radius').onFinishChange(regenerate);
+gui.add(stars, 'radius').min(1).max(10).step(1).name('radius').onFinishChange(regenerate);
+gui.add(stars, 'branches').min(3).max(10).step(1).name('branches').onFinishChange(regenerate);
+gui.add(stars, 'spin').min(-10).max(10).step(1).name('spin').onFinishChange(regenerate);
+gui.add(stars, 'randomness').min(0).max(0.6).step(0.01).name('randomness').onFinishChange(regenerate);
+
 
 function regenerate() {
     // Clear the old galaxy and generate a new one
