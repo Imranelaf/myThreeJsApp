@@ -15,7 +15,7 @@ const size = {
 };
 
 // Setting up the camera
-const camera = new THREE.PerspectiveCamera(45, size.width / size.height, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(45, size.width / size.height, .1, 100);
 camera.position.z = 10;
 camera.position.y = 5;
 
@@ -31,12 +31,12 @@ let stars = {
     radius: 2,
     branches: 4,
     spin: 3,
-    randomness: 0.2
+    randomness: .2
 };
 
 // Creating the material for the points (stars)
 const material = new THREE.PointsMaterial({
-    size: 0.05,
+    size: .05,
     sizeAttenuation: true,
     depthWrite: false,
     blending: THREE.AdditiveBlending
@@ -51,11 +51,13 @@ let radius =  0;
 
 function generate() {
     let positions = new Float32Array(stars.number * 3);
+    console.log(positions.length);
+
     
     let branchesAngle = 0;
 
     // Inserting the x, y, z values for each star
-    for (let i = 0; i <= positions.length; i++) {
+    for (let i = 0; i < stars.number; i++) {
         radius =  Math.random() * stars.radius * stars.spin;
         const i3 = i *3;
         branchesAngle = (i % stars.branches) / stars.branches * Math.PI * 2;
@@ -64,9 +66,9 @@ function generate() {
             
         }
        
-        positions[i3] = Math.cos(branchesAngle + radius) * radius + (Math.random() * stars.randomness);
-        positions[i3 + 1] = Math.random() * stars.randomness;
-        positions[i3 + 2] =Math.sin(branchesAngle + radius) * radius + (Math.random() * stars.randomness);
+        positions[i3] = Math.cos(branchesAngle + radius) * radius + ((Math.random() - .5) * stars.randomness);
+        positions[i3 + 1] = (Math.random()- .5) * stars.randomness;
+        positions[i3 + 2] =Math.sin(branchesAngle + radius) * radius + ((Math.random() -.5) * stars.randomness);
     }
 
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -81,7 +83,7 @@ scene.add(axes); */
 // Orbit controls
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
-controls.dampingFactor = 0.05;
+controls.dampingFactor = .05;
 
 function galaxy() {
     requestAnimationFrame(galaxy);
