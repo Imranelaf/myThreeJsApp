@@ -35,11 +35,21 @@ let stars = {
 };
 
 // Creating the material for the points (stars)
-const material = new THREE.PointsMaterial({
-    size: .05,
-    sizeAttenuation: true,
+const material = new THREE.ShaderMaterial({
     depthWrite: false,
-    blending: THREE.AdditiveBlending
+    blending: THREE.AdditiveBlending,
+    vertexColors: true,
+    vertexShader: `
+        void main() {
+        
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        gl_PointSize = 2.0;
+    }
+    `,
+    fragmentShader: ` void main(){ 
+
+        gl_FragColor = vec4(1.0,1.0,1.0, 1.0);
+    }`
 });
 
 // Creating the geometry to hold star positions
@@ -51,9 +61,7 @@ let radius =  0;
 
 function generate() {
     let positions = new Float32Array(stars.number * 3);
-    console.log(positions.length);
 
-    
     let branchesAngle = 0;
 
     // Inserting the x, y, z values for each star
@@ -61,10 +69,6 @@ function generate() {
         radius =  Math.random() * stars.radius * stars.spin;
         const i3 = i *3;
         branchesAngle = (i % stars.branches) / stars.branches * Math.PI * 2;
-        if(i<20){
-            console.log(i, branchesAngle);
-            
-        }
        
         positions[i3] = Math.cos(branchesAngle + radius) * radius + ((Math.random() - .5) * stars.randomness);
         positions[i3 + 1] = (Math.random()- .5) * stars.randomness;
