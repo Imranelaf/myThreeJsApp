@@ -12,7 +12,8 @@ A visually engaging, interactive 3D galaxy simulation, using custom shaders to a
 
 ## 🖼️ Preview
 
-Screenshot
+![galaxy](https://github.com/user-attachments/assets/2686a705-94da-4777-827f-89d2d726d949)
+
 
 
 ## 📦 Installation & Running Locally
