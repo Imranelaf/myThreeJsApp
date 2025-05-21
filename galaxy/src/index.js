@@ -3,172 +3,159 @@ import './style.css';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GUI } from 'dat.gui';
 
-// Setting up the scene
 const canvas = document.querySelector('canvas');
 const scene = new THREE.Scene();
 const gui = new GUI();
 
-// Setting the screen dimensions
+//Screen size
 const size = {
     width: window.innerWidth,
     height: window.innerHeight
 };
 
-// Setting up the camera
-const camera = new THREE.PerspectiveCamera(45, size.width / size.height, .1, 100);
-camera.position.z = 10;
-camera.position.y = 5;
+//Camera
+const camera = new THREE.PerspectiveCamera(45, size.width / size.height, 0.1, 200);
+camera.position.set(0, 5, 10);
+scene.add(camera);
 
-// Setting up the renderer
+//Renderer
 const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(size.width, size.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
+// OrbitControls
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+
 // Galaxy parameters
 let stars = {
-    number: 1000,
-    radius: 2,
-    branches: 4,
-    spin: 3,
-    randomness: .2,
+    number: 3000,
+    radius: 5,
+    branches: 5,
+    spin: 2,
+    randomness: 0.4,
     sazing: 0,
-    depthColor: '#de6c1d',
-    faceColor: '#1d3fde'
-    
+    depthColor: '#ff6400',
+    faceColor: '#0c2bb3'
 };
 
-
-
-    
-// Creating the material for the points (stars)
+// Shader material
 const material = new THREE.ShaderMaterial({
     depthWrite: false,
     blending: THREE.AdditiveBlending,
     vertexColors: true,
-    uniforms:{
-        size: {value: 12.0 * renderer.getPixelRatio()}
+    uniforms: {
+        size: { value: 12.0 * renderer.getPixelRatio() },
+        time: { value: 0 }
     },
     vertexShader: `
         uniform float size;
-        attribute float ascales;
+        uniform float time;
+        attribute float ascale;
+        varying vec3 vcolor;
+
+        void main() {
+            vec3 newPosition = position;
+            float distanceToCenter = length(newPosition.xz);
+            float angle = atan(newPosition.x, newPosition.z) + time * 0.8 * (1.0 / (distanceToCenter + 0.1));
+            newPosition.x = cos(angle) * distanceToCenter;
+            newPosition.z = sin(angle) * distanceToCenter;
+
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
+            gl_PointSize = size + ascale;
+            vcolor = color;
+        }
+    `,
+    fragmentShader: `
         varying vec3 vcolor;
         void main() {
-        
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        gl_PointSize = size + ascales;
-        vcolor = color;
-    }
-    `,
-    fragmentShader: ` 
-        varying vec3 vcolor;
-        void main(){ 
-
-        float strenght = 1.0 - (distance(gl_PointCoord, vec2(0.5)) * 2.0);
-        strenght = pow(strenght, 5.0);
-        vec3 color = mix(vec3(0.0), vcolor, strenght);
-        gl_FragColor = vec4(color, 1.0);
-    }`
+            float strength = 1.0 - distance(gl_PointCoord, vec2(0.5)) * 2.0;
+            strength = pow(strength, 5.0);
+            vec3 color = mix(vec3(0.0), vcolor, strength);
+            gl_FragColor = vec4(color, 1.0);
+        }
+    `
 });
 
-// Creating the geometry to hold star positions
-const geometry = new THREE.BufferGeometry();
+// Geometry and Points
+let geometry, point;
 
-// Points (star system) object
-let point = null;
-let radius =  0;
+function generateGalaxy() {
+    if (point !== undefined) {
+        geometry.dispose();
+        scene.remove(point);
+    }
 
-function generate() {
-    let positions = new Float32Array(stars.number * 3);
-    let scales = new Float32Array(stars.number);
-    let colors = new Float32Array(stars.number *3)
+    geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(stars.number * 3);
+    const scales = new Float32Array(stars.number);
+    const colors = new Float32Array(stars.number * 3);
 
-    let branchesAngle = 0;
-    let insidColor = new THREE.Color(stars.depthColor);
-    let outsideColor = new THREE.Color(stars.faceColor);
+    const insideColor = new THREE.Color(stars.depthColor);
+    const outsideColor = new THREE.Color(stars.faceColor);
 
-    console.log('inside color', insidColor);
-    
-    // Inserting the x, y, z values for each star
     for (let i = 0; i < stars.number; i++) {
-        radius =  Math.random() * stars.radius * stars.spin;
-        if(i<20){
-            console.log(radius / (stars.radius +2));
-            
-        }
-        const i3 = i *3;
-        branchesAngle = (i % stars.branches) / stars.branches * Math.PI * 2;
-       
-        positions[i3] = Math.cos(branchesAngle + radius) * radius + ((Math.random() - .5) * stars.randomness);
-        positions[i3 + 1] = (Math.random()- .5) * stars.randomness;
-        positions[i3 + 2] =Math.sin(branchesAngle + radius) * radius + ((Math.random() -.5) * stars.randomness);
+        const i3 = i * 3;
+        const radius = Math.random() * stars.radius;
+        const branchAngle = (i % stars.branches) / stars.branches * Math.PI * 2;
+        const spinAngle = radius * stars.spin;
 
-        //Color
-        let mixedColor = insidColor.clone();
-        mixedColor.lerp(outsideColor, radius / (stars.radius +3) );
+        const randomX = (Math.random() - 0.5) * stars.randomness;
+        const randomY = (Math.random() - 0.5) * stars.randomness;
+        const randomZ = (Math.random() - 0.5) * stars.randomness;
+
+        positions[i3] = Math.cos(branchAngle + spinAngle) * radius + randomX;
+        positions[i3 + 1] = randomY;
+        positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
+
+        const mixedColor = insideColor.clone();
+        mixedColor.lerp(outsideColor, radius / stars.radius);
+
         colors[i3] = mixedColor.r;
-        colors[i3 +1] = mixedColor.g;
-        colors[i3+2] = mixedColor.b;
+        colors[i3 + 1] = mixedColor.g;
+        colors[i3 + 2] = mixedColor.b;
 
         scales[i] = Math.random() * 10;
     }
 
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute('ascale', new THREE.BufferAttribute(scales));
+    geometry.setAttribute('ascale', new THREE.BufferAttribute(scales, 1));
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
     point = new THREE.Points(geometry, material);
     scene.add(point);
 }
 
+generateGalaxy();
 
-// Orbit controls
-const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
-controls.dampingFactor = .05;
+// GUI control
+gui.add(stars, 'number', 100, 10000, 100).onFinishChange(generateGalaxy);
+gui.add(stars, 'radius', 1, 10, 0.1).onFinishChange(generateGalaxy);
+gui.add(stars, 'branches', 2, 10, 1).onFinishChange(generateGalaxy);
+gui.add(stars, 'spin', 0, 5, 0.1).onFinishChange(generateGalaxy);
+gui.add(stars, 'randomness', 0, 2, 0.01).onFinishChange(generateGalaxy);
+gui.addColor(stars, 'depthColor').onFinishChange(generateGalaxy);
+gui.addColor(stars, 'faceColor').onFinishChange(generateGalaxy);
 
-function galaxy() {
-    requestAnimationFrame(galaxy);
-    controls.update();
-    renderer.render(scene, camera);
-}
-
-// Handle window resizing
+// Handle resize
 window.addEventListener('resize', () => {
     size.width = window.innerWidth;
     size.height = window.innerHeight;
-
     camera.aspect = size.width / size.height;
     camera.updateProjectionMatrix();
-
     renderer.setSize(size.width, size.height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
 
-// Initial generation and animation
-generate();
-galaxy();
+// Animation loop
+const clock = new THREE.Clock();
 
-// GUI controls
-gui.add(stars, 'number').min(500).max(5000).step(100).onFinishChange(regenerate);
-gui.add(stars, 'radius').min(1).max(10).step(1).name('radius').onFinishChange(regenerate);
-gui.add(stars, 'branches').min(3).max(10).step(1).name('branches').onFinishChange(regenerate);
-gui.add(stars, 'spin').min(-10).max(10).step(1).name('spin').onFinishChange(regenerate);
-gui.add(stars, 'randomness').min(0).max(0.6).step(0.01).name('randomness').onFinishChange(regenerate);
-gui.addColor(stars, 'depthColor').onFinishChange((e)=>{
+function animate() {
+    material.uniforms.time.value = clock.getElapsedTime();
 
-    stars.depthColor = e;
-    regenerate();
-})
-
-gui.addColor(stars, 'faceColor').onFinishChange((e)=>{
-
-    stars.faceColor = e;
-    regenerate();
-})
-
-function regenerate() {
-    // Clear the old galaxy and generate a new one
-    point.geometry.dispose();
-    point.material.dispose();
-    scene.remove(point);
-    generate();
+    controls.update();
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
 }
+
+animate();
