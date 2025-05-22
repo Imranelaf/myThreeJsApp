@@ -1,44 +1,33 @@
-# Fox Animation Playground
+# Water Surface Simulation
 
-Interactive 3D fox with animation controls. Just clone and npm start.
+This project is a water surface simulation. It uses custom shaders with Perlin noise to create realistic animated wave effects on a plane geometry, allowing users to explore and tweak parameters with a GUI.
 
-## 🚀 Quick Start
+## Features
+
+- 3D scene rendered with Three.js
+- Realistic water wave simulation using Perlin noise
+- Custom vertex shader for dynamic surface displacement
+- Interactive camera controls with OrbitControls
+- Real-time GUI controls using `dat.GUI`
+- Responsive design with dynamic window resizing
+
+## Screen Shot
+
+
+## Installation
+
+1. Clone the repository:
+
 ```bash
 git clone https://github.com/Imranelaf/myThreeJsApp.git
-cd fox
+cd myThreeJsApp/shaders/cWaves/
+```
+2. Install dependencies and start the server: 
+
+```bash
 npm install
-npm start
+npm run dev
+```
 
+👨‍💻  ENJOY 
 
-Then open http://localhost:8080
-
-✨ Features
-	🎮 Control fox animations (Survey/Walk/Run)
-
-	🖱️ Orbit camera controls
-
-	🌓 Realistic shadows
-
-	📱 Responsive design
-
-	⚡ Smooth animation transitions
-	
-🏗️ Project Structure
-	📦 root
-	├── 📂 classes       # Three.js components
-	│   ├── Camera.js    # Camera setup
-	│   ├── Light.js     # Lighting
-	│   ├── LoadModel.js # Fox model handler
-	│   ├── Object.js    # Ground plane
-	│   └── Rendering.js # Renderer config
-	├── 📂 public        # Static assets
-	│   ├── textures     # Texture files
-	│   └── model/Fox    # 3D model files
-	├── 📂 src           # Main app
-	│   └── index.js     # Scene setup
-	└── webpack.config.js
-	
-📝 Attribution
-Fox model created by KhronosGroup (CC-BY 4.0)
-
-Made with ☕ by Imrane ALI LAFKIH
