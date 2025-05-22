@@ -45,18 +45,6 @@ npm run dev
 npx webpack serve
 ```
 
-## 🧰 Folder Structure
-
-```
-.
-├── index.html
-├── script.js          # Main logic for galaxy creation
-├── style.css          # Canvas and body styling
-├── screenshot.png     # Optional: galaxy preview image
-├── package.json       # Optional: if using bundler
-└── README.md
-```
-
 ## ✨ Customization
 
 Galaxy parameters can be adjusted in `script.js`:
