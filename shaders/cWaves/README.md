@@ -19,15 +19,6 @@ This project is a water surface simulation. It uses custom shaders with Perlin n
 
 1. Clone the repository:
 
-```bash
-git clone https://github.com/Imranelaf/myThreeJsApp.git
-cd myThreeJsApp/shaders/cWaves/
-
-
-
-## Installation
-
-1. Clone the repository:
 
 ```bash
 git clone https://github.com/Imranelaf/myThreeJsApp.git
