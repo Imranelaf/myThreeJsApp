@@ -13,6 +13,17 @@ This project is a water surface simulation. It uses custom shaders with Perlin n
 
 ## Screen Shot
 
+![sea wave](https://github.com/user-attachments/assets/2c221aeb-def6-4ddc-9e93-3909533d407d)
+
+## Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/Imranelaf/myThreeJsApp.git
+cd myThreeJsApp/shaders/cWaves/
+
+
 
 ## Installation
 
@@ -28,6 +39,4 @@ cd myThreeJsApp/shaders/cWaves/
 npm install
 npm run dev
 ```
-
-👨‍💻  ENJOY 
-
+ ENJOY 

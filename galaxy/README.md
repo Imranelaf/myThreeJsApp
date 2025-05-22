@@ -12,7 +12,8 @@ A visually engaging, interactive 3D galaxy simulation, using custom shaders to a
 
 ## 🖼️ Preview
 
-Screenshot
+![galaxy](https://github.com/user-attachments/assets/2686a705-94da-4777-827f-89d2d726d949)
+
 
 
 ## 📦 Installation & Running Locally
@@ -42,18 +43,6 @@ npm run dev
 
 ```bash
 npx webpack serve
-```
-
-## 🧰 Folder Structure
-
-```
-.
-├── index.html
-├── script.js          # Main logic for galaxy creation
-├── style.css          # Canvas and body styling
-├── screenshot.png     # Optional: galaxy preview image
-├── package.json       # Optional: if using bundler
-└── README.md
 ```
 
 ## ✨ Customization
