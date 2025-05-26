@@ -16,7 +16,7 @@ const size = {
 };
 
 //load the texture smoke
-const texture = new THREE.TextureLoader().load('/model/perlin_noise.png');
+const texture = new THREE.TextureLoader().load('/model/perlin-noise-texture.png');
 texture.wrapS = THREE.RepeatWrapping;
 texture.wrapT = THREE.RepeatWrapping
 
@@ -74,14 +74,19 @@ const material = new THREE.ShaderMaterial(
             varying vec2 vUv;
             
             void main(){
-            vec2 uvSmock = vUv;
-            uvSmock.x *= 0.8;
-            uvSmock.y *=0.5;
-            uvSmock.y -=uTime * 0.05;
-            
-            
-            float smoke = texture(smokeTexture,uvSmock).r;
-                gl_FragColor = vec4(vec3(smoke),smoke);
+            vec2 uvSmoke = vUv;
+            uvSmoke.x *= 0.8;
+            uvSmoke.y *=0.5;
+           
+            uvSmoke.y -=uTime * 0.05;
+            float smoke = texture(smokeTexture,uvSmoke).r;
+           
+            smoke *= smoothstep(0.0,0.2, vUv.x);
+            smoke *= 1.0-smoothstep(0.8,1.0,vUv.x);
+            smoke *= smoothstep(0.0,0.3, vUv.y);
+            smoke *= 1.0-smoothstep(0.8,1.0,vUv.y);
+
+                gl_FragColor = vec4(vec3(smoke),smoke * 0.4);
             }
         `
 
