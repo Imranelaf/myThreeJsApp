@@ -62,10 +62,25 @@ const material = new THREE.ShaderMaterial(
         },
         vertexShader: `
             varying vec2 vUv;
+            uniform float uTime;
+            uniform sampler2D smokeTexture;
+
+            vec2 rotate2D(vec2 value, float angle){
+                float s = sin(angle);
+                float c = cos(angle);
+                mat2 m = mat2(c,s,-s,c);
+                return m * value;
+            }
          
             void main(){
                 vUv = uv;
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                vec3 newPosition = position;
+                float twist = texture(smokeTexture, vec2(0.4, uv.y + uTime *0.05)).r;
+                float angle = twist * 7.0;
+                newPosition.xz = rotate2D(newPosition.xz, angle);
+
+               
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
             }
         `,
         fragmentShader:`
@@ -86,7 +101,7 @@ const material = new THREE.ShaderMaterial(
             smoke *= smoothstep(0.0,0.3, vUv.y);
             smoke *= 1.0-smoothstep(0.8,1.0,vUv.y);
 
-                gl_FragColor = vec4(vec3(smoke),smoke * 0.4);
+            gl_FragColor = vec4(vec3(smoke),smoke * 0.7);
             }
         `
 
