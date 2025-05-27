@@ -16,7 +16,7 @@ const size = {
 };
 
 //load the texture smoke
-const texture = new THREE.TextureLoader().load('/model/perlin-noise-texture.png');
+const texture = new THREE.TextureLoader().load('/model/perlin-noise-texture.jpeg');
 texture.wrapS = THREE.RepeatWrapping;
 texture.wrapT = THREE.RepeatWrapping
 
@@ -54,6 +54,7 @@ scene.add(mesh2);
 const material = new THREE.ShaderMaterial(
     {
         side: THREE.DoubleSide,
+        depthWrite:false,
         transparent:true,
         uniforms:{
             uTime :{value: 0},
@@ -75,16 +76,21 @@ const material = new THREE.ShaderMaterial(
             void main(){
                 vUv = uv;
                 vec3 newPosition = position;
-                float twist = texture(smokeTexture, vec2(0.4, uv.y + uTime *0.05)).r;
-                float angle = twist * 7.0;
+                float twist = texture(smokeTexture, vec2(0.5, uv.y + uTime *0.005)).r;
+                float angle = twist * 2.0;
                 newPosition.xz = rotate2D(newPosition.xz, angle);
+
+                vec2 wind = vec2(texture(smokeTexture, vec2(0.25, uTime *0.008)).r -0.5,
+                texture(smokeTexture, vec2(0.25, uTime *0.005)).r -0.5);
+                wind *= pow(vUv.y, 2.0)*10.0;
+                newPosition.xz += wind;
 
                
                 gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
-            }
-        `,
-        fragmentShader:`
-            uniform sampler2D smokeTexture;
+            }`
+        ,
+        fragmentShader:
+            `uniform sampler2D smokeTexture;
             uniform float uTime;
             varying vec2 vUv;
             
@@ -101,13 +107,14 @@ const material = new THREE.ShaderMaterial(
             smoke *= smoothstep(0.0,0.3, vUv.y);
             smoke *= 1.0-smoothstep(0.8,1.0,vUv.y);
 
-            gl_FragColor = vec4(vec3(smoke),smoke * 0.7);
+            gl_FragColor = vec4(vec3(smoke),smoke);
+
             }
-        `
+        
 
-    });
+    `});
 
-const geometry = new THREE.PlaneGeometry(2,6, 64,64);
+const geometry = new THREE.PlaneGeometry(1,3, 64,64);
 const mesh = new THREE.Mesh(geometry, material);
 
 scene.add(mesh); 
