@@ -14,9 +14,9 @@ Move: Hold Shift and left-click to drag the model’s position.`
   }, [])
 
   return (
-    <Canvas camera={{ position: [0, 2, 5] }}>
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[3, 3, 3]} intensity={1} />
+    <Canvas camera={{ position: [0, 2, 5] }} shadows>
+      <ambientLight intensity={2} />
+      <directionalLight position={[3, 3, 3]} intensity={3} castShadow/>
       <Model />
       <OrbitControls />
     </Canvas>
