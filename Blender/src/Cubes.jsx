@@ -15,7 +15,7 @@ import { InstancedRigidBodies } from "@react-three/rapier";
 import { useMemo } from "react";
 
 export default function Cubes() {
-  const count = 50;
+  const count = 20;
 
   /*
     - useMemo is critical here:
@@ -65,7 +65,7 @@ export default function Cubes() {
       - InstancedRigidBodies links physics bodies to the instanced mesh
       - colliders="cuboid" creates one box collider per instance
     */
-    <InstancedRigidBodies instances={instances} colliders="cuboid">
+    <InstancedRigidBodies instances={instances} colliders="cuboid" restitution={.4}>
       
       {/* 
         Single mesh, rendered N times by the GPU

@@ -41,8 +41,8 @@ export default function BlenderBlade() {
 
     //second TRANSLATION
     // Circular motion using cos & sin
-    const x = Math.cos(time);
-    const z = Math.sin(time);
+    const x = Math.cos(time ) *2 ;
+    const z = Math.sin(time )  *2;
 
     // Move the blade in a circular path
     blade.current.setNextKinematicTranslation({ x,y: 0.8,z,});
