@@ -1,5 +1,8 @@
 import { OrbitControls } from "@react-three/drei";
 import Plane from "./Plane";
+import BlenderBlade from "./BlenderBlade";
+import { Physics } from "@react-three/rapier";
+import Cubes from "./Cubes";
 
 
 export default function APP() {
@@ -11,7 +14,11 @@ export default function APP() {
     <>
       <OrbitControls />
       <ambientLight intensity={2} />
-      <Plane />
+      <Physics>
+        <Cubes />
+        <BlenderBlade />
+        <Plane />
+     </Physics>
       
     </>
   )
