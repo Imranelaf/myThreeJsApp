@@ -48,15 +48,70 @@ controls.enableDamping = true;
 const sphere = new THREE.SphereGeometry(1, 32, 16);
 const torusKnot  = new THREE.TorusKnotGeometry( 1, 0.2, 32, 8 );
 
+// Vertex and Fragement
+const myVertex = `
+
+    varying vec3 vPosition;
+    varying vec3 vNormal;
+   
+   
+    void main(){
+        vec4 myPosition = modelMatrix * vec4(position, 1.0);
+    
+
+        gl_Position = projectionMatrix * viewMatrix * myPosition;
+
+        vec4 myNormal = modelMatrix * vec4(normal, 0.0); 
+        vPosition = myPosition.xyz;
+        vNormal = myNormal.xyz;
+        
+        }
+`
+
+const myFragement = `
+uniform float uTime;
+
+varying vec3 vPosition;
+varying vec3 vNormal;
+
+void main(){
+    float stripe = mod((vPosition.y - uTime * .05) * 10.0, 1.0);
+    vec3 normal = normalize(vNormal);
+    if(!gl_FrontFacing)
+        normal *= - 1.0;
+   
+    vec3 viewDirection = normalize(vPosition - cameraPosition);
+    
+    stripe = pow(stripe, 3.0);
+    
+  
+    float fresnel = dot(viewDirection, normal) + 1.0;
+    fresnel = pow(fresnel, 2.0);
+
+    //falloff
+    float falloff = smoothstep(.8, .0, fresnel);
+
+
+    float holographic = fresnel * stripe;
+    holographic += fresnel * 1.25;
+    holographic *= falloff;
+
+    gl_FragColor = vec4(1.0,1.0,1.0,holographic);
+    #include <tonemapping_fragment>
+    #include <colorspace_fragment>
+}`
+
 
 const material = new THREE.ShaderMaterial(
     {
         side: THREE.DoubleSide,
         depthWrite:false,
         transparent:true,
+        vertexShader: myVertex,
+        fragmentShader:myFragement,
         uniforms:{
             uTime :{value: 0},
-            smokeTexture: {value: texture}
+           
             
         },
        });
