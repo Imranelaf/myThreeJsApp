@@ -1,14 +1,16 @@
 import { Canvas } from "@react-three/fiber";
+import {Level1, Level2, Start} from "./components/Levels";
+import { OrbitControls } from "@react-three/drei";
+import './App.css'
 
 export default function App() {
   return (
-    <Canvas camera={{ position: [2, 2, 2] }}>
+    <Canvas className="TheCanvas" >
       <ambientLight intensity={1} />
-
-      <mesh>
-        <boxGeometry />
-        <meshStandardMaterial color="orange" />
-      </mesh>
+      <OrbitControls />
+      <Start />
+      <Level1 />
+      <Level2 />
     </Canvas>
   );
 }

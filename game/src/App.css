@@ -1,0 +1,16 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+Canvas{
+    
+    min-height: 100vh;
+    min-width: 100%;
+}
+
+.TheCanvas{ 
+    background-color: bisque;
+
+}
